@@ -1,14 +1,13 @@
 #include <string_view>
-#include <unordered_map>
 #include <iostream>
 
 #define STB_IMAGE_IMPLEMENTATION
-#include <stb-master/stb_image.h>
+#include <stb-image/stb_image.h>
 #define STB_IMAGE_WRITE_IMPLEMENTATION
-#include <stb-master/stb_image_write.h>
+#include <stb-image/stb_image_write.h>
+#include <glm/glm.hpp>
 
 #include "Image.hpp"
-#include <glm/glm.hpp>
 
 Image::Image(const ImageSpec& spec)
 {
@@ -68,7 +67,7 @@ void Image::writeToDisk(const std::string_view fp, bool fillAlpha, double fillVa
 				imgBytesWAlpha[chan4idx + 0] = static_cast<uint8_t>(255.9999f * pixel.x);
 				imgBytesWAlpha[chan4idx + 1] = static_cast<uint8_t>(255.9999f * pixel.y);
 				imgBytesWAlpha[chan4idx + 2] = static_cast<uint8_t>(255.9999f * pixel.z);
-				imgBytesWAlpha[chan4idx + 3] = (m_specification.Channels() == 3) ? (uint8_t)255.9999f * pixel.a : static_cast<uint8_t>(255.9999f * fillValue);
+				imgBytesWAlpha[chan4idx + 3] = (!fillAlpha) ? (uint8_t)255.9999f * pixel.a : static_cast<uint8_t>(255.9999f * fillValue);
 			}
 		}
 	}
