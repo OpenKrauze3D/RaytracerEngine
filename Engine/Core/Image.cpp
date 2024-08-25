@@ -7,7 +7,7 @@
 #include <stb-image/stb_image_write.h>
 #include <glm/glm.hpp>
 
-#include "Image.hpp"
+#include "Core/Image.hpp"
 
 Image::Image(const ImageSpec& spec)
 {

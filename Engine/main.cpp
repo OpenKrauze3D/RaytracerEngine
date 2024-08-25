@@ -1,7 +1,6 @@
 #include <iostream>
 
-#include <glm/glm.hpp>
-#include "Image.hpp"
+#include "Core/Image.hpp"
 
 int main()
 {
