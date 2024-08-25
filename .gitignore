@@ -1,5 +1,5 @@
-./build
-./thirdparty
+./build/
+./thirdparty/
 *.exe
 *.lua
 *.sln
@@ -403,3 +403,5 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/thirdparty/include/glm
+/thirdparty/include/stb-image
