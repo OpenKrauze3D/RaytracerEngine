@@ -17,7 +17,9 @@ Image::Image(const ImageSpec& spec)
 
 Image::~Image()
 {
-	delete[] m_data;
+	if (m_data != nullptr)
+		delete[] m_data;
+	
 	m_data = nullptr;
 }
 
@@ -42,7 +44,7 @@ void Image::writeToDisk(const std::string_view fp, bool fillAlpha, double fillVa
 	{
 		for (size_t i = 0; i < m_specification.width; i++)
 		{
-			const size_t index = i + (m_specification.height * j);
+			const size_t index = i + (m_specification.width * j);
 			const size_t chan3idx = index * 3;
 			const size_t chan4idx = index * 4;
 
@@ -104,7 +106,12 @@ void Image::writeToDisk(const std::string_view fp, bool fillAlpha, double fillVa
 		}
 	}
 
-	delete[] imgFloats;
-	delete[] imgBytesWAlpha;
-	delete[] imgBytes;
+	if (imgFloats != nullptr) 
+	{ delete[] imgFloats; }
+	
+	if (imgBytesWAlpha != nullptr) 
+	{ delete[] imgBytesWAlpha; }
+	
+	if (imgBytes != nullptr) 
+	{ delete[] imgBytes; }
 }
