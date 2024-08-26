@@ -1,7 +1,5 @@
 ./build/
-./thirdparty/
 *.exe
-*.lua
 *.sln
 *vcxproj*
 
