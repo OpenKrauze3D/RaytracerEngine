@@ -1,4 +1,7 @@
 ./build/
+./.vs/
+./.idea/
+./*.png
 *.exe
 *.sln
 *.vcxproj*
