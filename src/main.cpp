@@ -1,39 +1,47 @@
 #include <iostream>
-#include <random>
 
 #include "Core/Image.hpp"
+#include "Core/Camera.hpp"
+#include "Core/ray_3d.hpp"
 
 int main()
 {
     // Image
-    constexpr uint16_t WIDTH = 1024;
-    constexpr uint16_t HEIGHT = 1024;
+    constexpr uint16_t WIDTH = 1280;
+    constexpr uint16_t HEIGHT = 720;
 
     {
         ImageSpec spec = ImageSpec(WIDTH, HEIGHT, 8);
         Image img(spec);
+        rte::Camera camera{};
+        camera.viewport = rte::Camera::Viewport(2.0f, img);
+        camera.viewport.coord_upper_left_pixel(&camera);
 
-        std::mt19937_64 generator(0);
-        std::uniform_real_distribution<float> red(0, 1.0f);
-        std::uniform_real_distribution<float> green(0, 1.0f);
-        std::uniform_real_distribution<float> blue(0, 1.0f);
+        for (int i = 0; i < WIDTH; ++i)
+        {
+            std::clog << "\rScanlines remaining: " << (WIDTH - i);
+            for (int j = 0; j < HEIGHT; ++j)
+            {
+                const size_t idx = ((j * WIDTH) + i);
 
-        // Render
-        for (int j = 0; j < HEIGHT; j++) {
-            std::clog << "\rScanlines remaining: " << (HEIGHT - j) << ' ' << std::flush;
-            for (int i = 0; i < WIDTH; i++) {
-                size_t idx = ((j * WIDTH) + i);
+                rte::vec3 pixel_center = camera.viewport.pixel00_loc +
+                    (i * camera.viewport.pixel_delta_u) +
+                    (j * camera.viewport.pixel_delta_v);
+                rte::vec3 ray_direction = pixel_center - camera.centre;
+                rte::Ray3D r(camera.centre, ray_direction);
 
-                img.m_data[idx].r = red(generator);     // Red channel (U)
-                img.m_data[idx].g = green(generator); // Green channel (V)
-                img.m_data[idx].b = blue(generator);
+                rte::Colour colour = rte::ray_colour(r);
+                img.m_data[idx][0] = colour[0];
+                img.m_data[idx][1] = colour[1];
+                img.m_data[idx][2] = colour[2];
             }
         }
-        std::clog << std::endl;
-
+        std::clog << "\r\r\r" << std::endl;
         img.writeToDisk("./test", true);
         std::clog << "\rDone\t\t\t\t";
         std::cin.get();
     }
     std::cin.get();
+
+    return 0;
 }

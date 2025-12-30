@@ -1,18 +1,21 @@
 #include <string_view>
 #include <iostream>
+#include <random>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb-image/stb_image.h>
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb-image/stb_image_write.h>
-#include <glm/glm.hpp>
+// #include <glm/glm.hpp>
 
 #include "Core/Image.hpp"
+
+#include <filesystem>
 
 Image::Image(const ImageSpec& spec)
 {
 	m_specification = spec;
-	m_data = new glm::vec4[m_specification.Size()];
+	m_data = new rte::vec4[m_specification.Dimensions()];
 }
 
 Image::~Image()
@@ -31,13 +34,13 @@ void Image::writeToDisk(const std::string_view fp, bool fillAlpha, double fillVa
 
 	// If there is non-HDR
 	if ((m_specification.Type() & ImgType::JPG) || (m_specification.Type() & ImgType::BMP))
-		imgBytes = new uint8_t[m_specification.Size() * 3];
+		imgBytes = new uint8_t[m_specification.Dimensions() * 3];
 
 	if ((m_specification.Type() & ImgType::PNG) || (m_specification.Type() & ImgType::TGA))
-		imgBytesWAlpha = new uint8_t[m_specification.Size() * 4];
+		imgBytesWAlpha = new uint8_t[m_specification.Dimensions() * 4];
 
 	if (m_specification.Type() & ImgType::HDR)
-		imgFloats = new float[m_specification.Size() * 3];
+		imgFloats = new float[m_specification.Dimensions() * 3];
 
 	std::cout << "Making image buffers!\n";
 	for (size_t j = 0; j < m_specification.height; j++)
@@ -48,13 +51,13 @@ void Image::writeToDisk(const std::string_view fp, bool fillAlpha, double fillVa
 			const size_t chan3idx = index * 3;
 			const size_t chan4idx = index * 4;
 
-			const glm::vec4& pixel = m_data[index];
+			const rte::vec4& pixel = m_data[index];
 
 			if (imgFloats != nullptr)
 			{
-				imgFloats[chan3idx + 0] = pixel.x;
-				imgFloats[chan3idx + 1] = pixel.y;
-				imgFloats[chan3idx + 2] = pixel.z;
+				imgFloats[chan3idx + 0] = pixel[0];
+				imgFloats[chan3idx + 1] = pixel[1];
+				imgFloats[chan3idx + 2] = pixel[2];
 			}
 
 			if (imgBytes != nullptr)
@@ -69,12 +72,13 @@ void Image::writeToDisk(const std::string_view fp, bool fillAlpha, double fillVa
 				imgBytesWAlpha[chan4idx + 0] = static_cast<uint8_t>(255.9999f * pixel.x);
 				imgBytesWAlpha[chan4idx + 1] = static_cast<uint8_t>(255.9999f * pixel.y);
 				imgBytesWAlpha[chan4idx + 2] = static_cast<uint8_t>(255.9999f * pixel.z);
-				imgBytesWAlpha[chan4idx + 3] = (!fillAlpha) ? (uint8_t)255.9999f * pixel.a : static_cast<uint8_t>(255.9999f * fillValue);
+				imgBytesWAlpha[chan4idx + 3] = (!fillAlpha) ? (uint8_t)255.9999f * pixel.w : static_cast<uint8_t>(255.9999f * fillValue);
 			}
 		}
 	}
 	
 	std::cout << "Writing to disk!\n";
+	std::cout << std::filesystem::current_path() << "\\" << fp << std::endl;
 
 	for (size_t i = 0; i <= 4; i++)
 	{
@@ -113,4 +117,30 @@ void Image::writeToDisk(const std::string_view fp, bool fillAlpha, double fillVa
 	
 	if (imgBytes != nullptr) 
 	{ delete[] imgBytes; }
+}
+
+void Image::generate_noise(int seed)
+{
+	std::mt19937_64 generator(seed);
+	std::uniform_real_distribution<float> red(0, 1.0f);
+	std::uniform_real_distribution<float> green(0, 1.0f);
+	std::uniform_real_distribution<float> blue(0, 1.0f);
+
+	const size_t width = m_specification.width;
+	const size_t height = m_specification.height;
+	// Render
+	for (size_t j = 0; j < width; ++j) {
+		for (size_t i = 0; i < height; ++i) {
+			const size_t idx = ((j * width) + i);
+    
+			m_data[idx][0] = red(generator);     // Red channel
+			m_data[idx][1] = green(generator);   // Green channel
+			m_data[idx][2] = blue(generator);    // Blue channel
+		}
+	}
+}
+
+const ImageSpec& Image::GetSpec() const
+{
+	return m_specification;
 }
