@@ -1,6 +1,6 @@
 ./build/
 ./.vs/
-./.idea/
+/.idea/
 ./*.png
 *.exe
 *.sln

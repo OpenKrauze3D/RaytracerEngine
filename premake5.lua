@@ -1,8 +1,8 @@
-workspace "Raytracer"
+workspace "Raytracer_InAWeekend"
     architecture "x64"
     configurations { "Debug", "Release" }
 
-targetdir "build/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
+targetdir "build/%{cfg.buildcfg}/%{cfg.system}-%{cfg.architecture}"
 
 includedirs {
     -- Thirdparty
@@ -23,21 +23,21 @@ filter "configurations:Release"
     defines "NDEBUG"
     optimize "On"
 
-project "Engine"
-    location "Engine"
+project "Raytracer"
+    location "src"
     kind "ConsoleApp"
     language "C++"
 
     files { 
-        "./Engine/**.h",
-        "./Engine/**.hpp",
-        "./Engine/**.c",
-        "./Engine/**.cpp"
+        "./%{prj.location}/**.h",
+        "./%{prj.location}/**.hpp",
+        "./%{prj.location}/**.c",
+        "./%{prj.location}/**.cpp"
     }
 
     includedirs {
         -- Project source code
-        "./Engine/",
+        "./%{prj.location}/",
     }
 
 

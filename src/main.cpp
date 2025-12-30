@@ -6,12 +6,11 @@
 int main()
 {
     // Image
-    constexpr uint16_t WIDTH = 2048;
+    constexpr uint16_t WIDTH = 1024;
     constexpr uint16_t HEIGHT = 1024;
 
-
     {
-        ImageSpec spec = ImageSpec(WIDTH, HEIGHT, 31);
+        ImageSpec spec = ImageSpec(WIDTH, HEIGHT, 8);
         Image img(spec);
 
         std::mt19937_64 generator(0);
@@ -32,7 +31,7 @@ int main()
         }
         std::clog << std::endl;
 
-        img.writeToDisk("../test", true);
+        img.writeToDisk("./test", true);
         std::clog << "\rDone\t\t\t\t";
         std::cin.get();
     }

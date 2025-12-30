@@ -73,8 +73,7 @@ void Image::writeToDisk(const std::string_view fp, bool fillAlpha, double fillVa
 			}
 		}
 	}
-
-
+	
 	std::cout << "Writing to disk!\n";
 
 	for (size_t i = 0; i <= 4; i++)
