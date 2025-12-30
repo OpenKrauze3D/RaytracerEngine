@@ -49,7 +49,6 @@ namespace rte
         const double lerp = 0.5*(unit_direction.y + 1.0);
         return (1.0-lerp)*Colour(1.0, 1.0, 1.0) + lerp*Colour(0.5, 0.7, 1.0);
     }
-
     
 };
 #endif

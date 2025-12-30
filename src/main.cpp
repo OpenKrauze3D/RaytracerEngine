@@ -2,7 +2,9 @@
 
 #include "Core/Image.hpp"
 #include "Core/Camera.hpp"
+#include "Core/HitList.hpp"
 #include "Core/ray_3d.hpp"
+#include "Core/Primitives/Sphere.hpp"
 
 int main()
 {
@@ -17,6 +19,10 @@ int main()
         camera.viewport = rte::Camera::Viewport(2.0f, img);
         camera.viewport.coord_upper_left_pixel(&camera);
 
+        rte::HitList world{};
+        world.add(std::make_shared<rte::Sphere>(rte::Point3D(-1,0,-1), 0.3));
+        world.add(std::make_shared<rte::Sphere>(rte::Point3D(1,0.25,-2), 0.65));
+        
         for (int i = 0; i < WIDTH; ++i)
         {
             std::clog << "\rScanlines remaining: " << (WIDTH - i);
@@ -30,7 +36,7 @@ int main()
                 rte::vec3 ray_direction = pixel_center - camera.centre;
                 rte::Ray3D r(camera.centre, ray_direction);
 
-                rte::Colour colour = rte::ray_colour(r);
+                rte::Colour colour = rte::ray_colour(r, world);
                 img.m_data[idx][0] = colour[0];
                 img.m_data[idx][1] = colour[1];
                 img.m_data[idx][2] = colour[2];

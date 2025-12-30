@@ -2,7 +2,7 @@
 #define CAMERA_HPP
 
 #include "Image.hpp"
-#include "vec3.hpp"
+#include "rt_minimal.hpp"
 
 namespace rte
 {
