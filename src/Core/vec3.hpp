@@ -8,7 +8,8 @@
 
 namespace rte
 {
-    struct vec3 {
+    struct vec3
+    {
         union
         {
             double e[3] = {0,0,0};
@@ -17,6 +18,7 @@ namespace rte
         };
 
         constexpr vec3() = default;
+        constexpr vec3(double xyz) : e{xyz, xyz, xyz} {}
         constexpr vec3(const double& e0, const double& e1, const double& e2) : e{e0, e1, e2} {}
 
         constexpr vec3 operator-() const { return vec3(-e[0], -e[1], -e[2]); }

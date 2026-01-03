@@ -14,8 +14,8 @@
 int main()
 {
     // Image
-    constexpr uint16_t WIDTH = 1200;
-    constexpr uint16_t HEIGHT = 800;
+    constexpr uint16_t WIDTH = 800;
+    constexpr uint16_t HEIGHT = 600;
     
     {
         rte::ImageSpec spec = rte::ImageSpec(WIDTH, HEIGHT, rte::ImgType::PNG);
@@ -24,8 +24,8 @@ int main()
         scene.max_bounces = 16;
         scene.init();
 
-        auto material_ground = std::make_shared<rte::MAT_Lambertian>(rte::Colour(0.8, 0.8, 0.0));
-        auto material_center = std::make_shared<rte::MAT_Lambertian>(rte::Colour(0.1, 0.2, 0.5));
+        auto material_ground = std::make_shared<rte::MAT_Lambertian>(rte::Colour(0.5, 0.5, 0.5));
+        auto material_center = std::make_shared<rte::MAT_Lambertian>(rte::Colour(1.0, 0.5, 0.2));
         auto material_left   = std::make_shared<rte::MAT_Dielectric>(1.5);
         auto material_bubble   = std::make_shared<rte::MAT_Dielectric>(1.0/1.50);
         auto material_right  = std::make_shared<rte::MAT_Specular>(rte::Colour(0.8, 0.6, 0.2), 0.1);

@@ -32,7 +32,7 @@ namespace rte
             Image& output_image
         );
     public:
-        static Colour ray_colour(const Ray3D& ray, int depth, const IRayHittable& hittable);
+        static Colour ray_colour(const Ray3D& ray, int bounces, const IRayHittable& hittable);
     public:
         int samples_per_pixel = 10;
         int max_bounces = 10;

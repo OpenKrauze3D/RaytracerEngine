@@ -67,10 +67,10 @@ namespace rte
 				const size_t chan3idx = index * 3;
 				const size_t chan4idx = index * 4;
 
-				vec4& pixel = pixels[index];
-				pixel[0] = linear_to_gamma(pixel[0]);
-				pixel[1] = linear_to_gamma(pixel[1]);
-				pixel[2] = linear_to_gamma(pixel[2]);
+				const vec4& pixel = pixels[index];
+				// pixel[0] = linear_to_gamma(pixel[0]);
+				// pixel[1] = linear_to_gamma(pixel[1]);
+				// pixel[2] = linear_to_gamma(pixel[2]);
 
 				if (imgFloats != nullptr)
 				{
