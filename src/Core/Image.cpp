@@ -33,6 +33,15 @@ namespace rte
 		pixels.clear();
 	}
 
+	double Image::linear_to_gamma(double linear_component)
+	{
+		if (linear_component > 0)
+		{
+			return std::sqrt(linear_component);
+		}
+		return 0;
+	}
+
 	void Image::writeToDisk(const std::string_view fp, bool fillAlpha, double fillValue)
 	{
 		uint8_t* imgBytes = nullptr;
@@ -58,7 +67,10 @@ namespace rte
 				const size_t chan3idx = index * 3;
 				const size_t chan4idx = index * 4;
 
-				const rte::vec4& pixel = pixels[index];
+				vec4& pixel = pixels[index];
+				pixel[0] = linear_to_gamma(pixel[0]);
+				pixel[1] = linear_to_gamma(pixel[1]);
+				pixel[2] = linear_to_gamma(pixel[2]);
 
 				if (imgFloats != nullptr)
 				{

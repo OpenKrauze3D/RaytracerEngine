@@ -10,16 +10,18 @@
 int main()
 {
     // Image
-    constexpr uint16_t WIDTH = 1280;
-    constexpr uint16_t HEIGHT = 720;
+    constexpr uint16_t WIDTH = 711;
+    constexpr uint16_t HEIGHT = 400;
 
     {
         rte::ImageSpec spec = rte::ImageSpec(WIDTH, HEIGHT, rte::ImgType::PNG);
-        rte::Scene scene(spec); 
+        rte::Scene scene(spec);
+        scene.samples_per_pixel = 100;
+        scene.max_bounces = 50;
         scene.init();
 
-        scene.attach(std::make_shared<rte::Sphere>(rte::Point3D(-1,0,-1), 0.3));
-        scene.attach(std::make_shared<rte::Sphere>(rte::Point3D(0,-100.5,-1), 100));
+        scene.attach(std::make_shared<rte::Sphere>(rte::Point3D(0,0.2,-0.5), 0.3));
+        scene.attach(std::make_shared<rte::Sphere>(rte::Point3D(0,-100.1,-1), 100));
 
         scene.render();
     }

@@ -1,6 +1,6 @@
 ﻿#include "Sphere.hpp"
 
-bool rte::Sphere::hit(const Ray3D& r, double ray_tmin, double ray_tmax, HitResult& rec) const
+bool rte::Sphere::hit(const Ray3D& r, interval ray_t, HitResult& rec) const
 {
     {
         vec3 oc = centre - r.origin();
@@ -16,9 +16,9 @@ bool rte::Sphere::hit(const Ray3D& r, double ray_tmin, double ray_tmax, HitResul
 
         // Find the nearest root that lies in the acceptable range.
         auto root = (h - sqrtd) / a;
-        if (root <= ray_tmin || ray_tmax <= root) {
+        if (root <= ray_t.min || ray_t.max <= root) {
             root = (h + sqrtd) / a;
-            if (root <= ray_tmin || ray_tmax <= root)
+            if (root <= ray_t.min || ray_t.max <= root)
                 return false;
         }
 

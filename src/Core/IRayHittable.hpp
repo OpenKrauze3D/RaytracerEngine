@@ -1,6 +1,7 @@
 ﻿#ifndef IRAY_HITTABLE_HPP
 #define IRAY_HITTABLE_HPP
 
+#include "interval.hpp"
 #include "vec3.hpp"
 #include "ray_3d.hpp"
 
@@ -24,7 +25,7 @@ namespace rte
     {
     public:
         virtual ~IRayHittable() = default;
-        virtual bool hit(const Ray3D& r, double ray_tmin, double ray_tmax, HitResult& rec) const = 0;
+        virtual bool hit(const Ray3D& r, interval ray_t, HitResult& rec) const = 0;
     };
 }
 

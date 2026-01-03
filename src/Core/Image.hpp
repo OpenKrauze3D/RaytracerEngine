@@ -85,6 +85,7 @@ namespace rte
 		~Image();
 
 	public:
+		double linear_to_gamma(double linear_component);
 		void writeToDisk(std::string_view fp, bool fillAlpha = true, double fillValue = 1.0);
 		void generate_noise(int seed = 0);
 		const ImageSpec& GetSpec() const;

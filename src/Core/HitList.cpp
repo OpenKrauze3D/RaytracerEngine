@@ -10,15 +10,15 @@ void rte::HitList::clear()
     objects.clear();
 }
 
-bool rte::HitList::hit(const Ray3D& r, double ray_tmin, double ray_tmax, HitResult& rec) const
+bool rte::HitList::hit(const Ray3D& r, interval ray_t, HitResult& rec) const
 {
     HitResult result;
     bool hit_anything = false;
-    auto closest_so_far = ray_tmax;
+    double closest_so_far = ray_t.max;
 
     for (const auto& object : objects)
     {
-        if (object->hit(r, ray_tmin, closest_so_far, result))
+        if (object->hit(r, interval(ray_t.min, closest_so_far), result))
         {
             hit_anything = true;
             closest_so_far = result.t;

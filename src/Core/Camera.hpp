@@ -2,6 +2,7 @@
 #define CAMERA_HPP
 
 #include "Image.hpp"
+#include "ray_3d.hpp"
 #include "rt_minimal.hpp"
 
 namespace rte
@@ -46,6 +47,9 @@ namespace rte
         {
             viewport.coord_upper_left_pixel(this);
         }
+
+        Ray3D get_ray(size_t i, size_t j) const;
+        vec3 sample_square() const;
         
         Viewport viewport{};
         double focal_length = 1.0;

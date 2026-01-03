@@ -18,7 +18,7 @@ namespace rte
         void add(std::shared_ptr<IRayHittable> object);
         void clear();
 
-        bool hit(const Ray3D& r, double ray_tmin, double ray_tmax, HitResult& rec) const override;
+        bool hit(const Ray3D& r, interval ray_t, HitResult& rec) const override;
 
         
     public:

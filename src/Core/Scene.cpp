@@ -21,8 +21,10 @@ void rte::Scene::attach(const std::shared_ptr<IRayHittable>& object)
 
 void rte::Scene::init()
 {
+    camera.centre = {0,0.2,0.3};
     camera.viewport = Camera::Viewport(2.0f, output_image);
     camera.viewport.coord_upper_left_pixel(&camera);
+    pixel_samples_scale = 1.0 / static_cast<double>(samples_per_pixel);
 }
 
 
@@ -32,20 +34,25 @@ void rte::Scene::render()
     const auto WIDTH = spec.width;
     const auto HEIGHT = spec.height;
     
-    for (size_t i = 0; i < WIDTH-1; i++)
+    for (size_t i = 0; i < WIDTH; ++i)
     {
         std::clog << "\rScanlines remaining: " << (WIDTH - i);
-        for (size_t j = 0; j < HEIGHT-1; j++)
+        for (size_t j = 0; j < HEIGHT; ++j)
         {
-            size_t idx = ((j * WIDTH) + i);
-
-            vec3 pixel_center = camera.viewport.pixel00_loc +
-                (i * camera.viewport.pixel_delta_u) +
-                (j * camera.viewport.pixel_delta_v);
-            vec3 ray_direction = pixel_center - camera.centre;
-            Ray3D r(camera.centre, ray_direction);
-
-            Colour colour = ray_colour(r, world);
+            const size_t idx = ((j * WIDTH) + i);
+            Colour colour(0,0,0);
+            for (int sample = 0; sample < samples_per_pixel; ++sample)
+            {
+                // auto offset = camera.sample_square();
+                // vec3 pixel_center = camera.viewport.pixel00_loc
+                //     + ((static_cast<double>(i) + offset[0]) * camera.viewport.pixel_delta_u)
+                //     + ((static_cast<double>(j) + offset[1]) * camera.viewport.pixel_delta_v);
+                // vec3 ray_direction = pixel_center - camera.centre;
+                // Ray3D ray(camera.centre, ray_direction);
+                Ray3D ray = camera.get_ray(i,j);
+                colour += ray_colour(ray, max_bounces, world);
+            }
+            colour = colour * pixel_samples_scale;
             output_image.pixels[idx][0] = colour[0];
             output_image.pixels[idx][1] = colour[1];
             output_image.pixels[idx][2] = colour[2];
@@ -59,15 +66,21 @@ void rte::Scene::render()
 }
 
 
-rte::Colour rte::Scene::ray_colour(const Ray3D& ray, const IRayHittable& hittable)
+rte::Colour rte::Scene::ray_colour(const Ray3D& ray, int depth, const IRayHittable& hittable)
 {
     HitResult result{};
 
-    if (hittable.hit(ray, 0, DINFINITY, result)) {
-        return 0.5 * (result.HitNormal + Colour(1,1,1));
+    if (depth <= 0)
+    {
+        return Colour(0,0,0);
+    }
+    
+    if (hittable.hit(ray, interval(0.0001, DINFINITY), result)) {
+        vec3 direction = result.HitNormal + random_unit_vector();
+        return 0.5 * ray_colour(Ray3D(result.HitLocation, direction), depth-1, hittable);
     }
 
     vec3 unit_direction = unit_vector(ray.direction());
-    const double lerp = 0.5*(unit_direction.y + 1.0);
+    double lerp = 0.5*(unit_direction.y + 1.0);
     return (1.0-lerp)*Colour(1.0, 1.0, 1.0) + lerp*Colour(0.5, 0.7, 1.0);
 }
