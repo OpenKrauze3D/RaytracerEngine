@@ -7,12 +7,15 @@
 
 namespace rte
 {
+    class IMaterialExpression;
+    
     struct HitResult {
         Point3D HitLocation;
         vec3 HitNormal;
+        std::shared_ptr<IMaterialExpression> material;
         double t;
         bool front_face;
-
+        
         void set_face_normal(const Ray3D& ray, const vec3& outward_normal) {
             // Sets the hit record normal vector.
             // NOTE: the parameter `outward_normal` is assumed to have unit length.

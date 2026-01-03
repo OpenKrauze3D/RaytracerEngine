@@ -1,5 +1,10 @@
 ﻿#include "Sphere.hpp"
 
+#include "Core/IMaterialExpression.hpp"
+
+rte::Sphere::Sphere(const Point3D& _centre, double _radius, std::shared_ptr<IMaterialExpression> mat)
+    : centre(_centre), radius(_radius), material(mat) {}
+
 bool rte::Sphere::hit(const Ray3D& r, interval ray_t, HitResult& rec) const
 {
     {
@@ -26,6 +31,7 @@ bool rte::Sphere::hit(const Ray3D& r, interval ray_t, HitResult& rec) const
         rec.HitLocation = r.at(rec.t);
         vec3 outward_normal = (rec.HitLocation - centre) / radius;
         rec.set_face_normal(r, outward_normal);
+        rec.material = material;
 
         return true;
     }

@@ -1,5 +1,6 @@
 ﻿#include "Scene.hpp"
 
+#include "IMaterialExpression.hpp"
 #include "rt_minimal.hpp"
 
 
@@ -22,7 +23,7 @@ void rte::Scene::attach(const std::shared_ptr<IRayHittable>& object)
 void rte::Scene::init()
 {
     camera.centre = {0,0.2,0.3};
-    camera.viewport = Camera::Viewport(2.0f, output_image);
+    camera.viewport = Camera::Viewport(1.5f, output_image);
     camera.viewport.coord_upper_left_pixel(&camera);
     pixel_samples_scale = 1.0 / static_cast<double>(samples_per_pixel);
 }
@@ -36,19 +37,12 @@ void rte::Scene::render()
     
     for (size_t i = 0; i < WIDTH; ++i)
     {
-        std::clog << "\rScanlines remaining: " << (WIDTH - i);
         for (size_t j = 0; j < HEIGHT; ++j)
         {
             const size_t idx = ((j * WIDTH) + i);
             Colour colour(0,0,0);
             for (int sample = 0; sample < samples_per_pixel; ++sample)
             {
-                // auto offset = camera.sample_square();
-                // vec3 pixel_center = camera.viewport.pixel00_loc
-                //     + ((static_cast<double>(i) + offset[0]) * camera.viewport.pixel_delta_u)
-                //     + ((static_cast<double>(j) + offset[1]) * camera.viewport.pixel_delta_v);
-                // vec3 ray_direction = pixel_center - camera.centre;
-                // Ray3D ray(camera.centre, ray_direction);
                 Ray3D ray = camera.get_ray(i,j);
                 colour += ray_colour(ray, max_bounces, world);
             }
@@ -57,6 +51,7 @@ void rte::Scene::render()
             output_image.pixels[idx][1] = colour[1];
             output_image.pixels[idx][2] = colour[2];
         }
+        std::clog << "\rScanlines remaining: " << (WIDTH - i);
     }
 
     std::clog << "\r\r\r" << std::endl;
@@ -76,8 +71,15 @@ rte::Colour rte::Scene::ray_colour(const Ray3D& ray, int depth, const IRayHittab
     }
     
     if (hittable.hit(ray, interval(0.0001, DINFINITY), result)) {
-        vec3 direction = result.HitNormal + random_unit_vector();
-        return 0.5 * ray_colour(Ray3D(result.HitLocation, direction), depth-1, hittable);
+        Ray3D scattered;
+        Colour attenuation;
+        if (result.material->scatter(ray, result, attenuation, scattered))
+        {
+            return attenuation * ray_colour(scattered, depth - 1, hittable);
+        }
+        return Colour(0,0,0);
+        // vec3 direction = result.HitNormal + random_unit_vector();
+        // return 0.5 * ray_colour(Ray3D(result.HitLocation, direction), depth-1, hittable);
     }
 
     vec3 unit_direction = unit_vector(ray.direction());

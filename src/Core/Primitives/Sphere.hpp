@@ -9,7 +9,7 @@ namespace rte
     {
     public:
         Sphere() = delete;
-        Sphere(const Point3D& _centre, double _radius) : centre(_centre), radius(std::fmax(0,_radius)) {}
+        Sphere(const Point3D& _centre, double _radius, std::shared_ptr<IMaterialExpression> mat);
         ~Sphere() override = default;
     public:
         bool hit(const Ray3D& r, interval ray_t, HitResult& rec) const override;
@@ -17,6 +17,7 @@ namespace rte
     public:
         Point3D centre;
         double radius;
+        std::shared_ptr<IMaterialExpression> material;
     };
 }
 
