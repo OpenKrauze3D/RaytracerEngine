@@ -13,23 +13,24 @@
 #include <filesystem>
 namespace rte
 {
-	Image::Image()
-	{
-		pixels = nullptr;
-	}
+	Image::Image() {}
 	
 	Image::Image(const ImageSpec& spec)
 	{
 		m_specification = spec;
-		pixels = new rte::vec4[m_specification.Dimensions()];
+		pixels.resize(m_specification.Dimensions());
+	}
+
+	Image::Image(const Image& img)
+	{
+		m_specification = img.m_specification;
+		pixels.reserve(img.m_specification.Dimensions());
+		pixels.resize(m_specification.Dimensions());
 	}
 
 	Image::~Image()
 	{
-		if (pixels != nullptr)
-			delete[] pixels;
-	
-		pixels = nullptr;
+		pixels.clear();
 	}
 
 	void Image::writeToDisk(const std::string_view fp, bool fillAlpha, double fillValue)
@@ -68,17 +69,17 @@ namespace rte
 
 				if (imgBytes != nullptr)
 				{
-					imgBytes[chan3idx + 0] = static_cast<uint8_t>(255.9999f * pixel.x);
-					imgBytes[chan3idx + 1] = static_cast<uint8_t>(255.9999f * pixel.y);
-					imgBytes[chan3idx + 2] = static_cast<uint8_t>(255.9999f * pixel.z);
+					imgBytes[chan3idx + 0] = static_cast<uint8_t>(255.9999f * pixel[0]);
+					imgBytes[chan3idx + 1] = static_cast<uint8_t>(255.9999f * pixel[1]);
+					imgBytes[chan3idx + 2] = static_cast<uint8_t>(255.9999f * pixel[2]);
 				}
 
 				if (imgBytesWAlpha != nullptr)
 				{
-					imgBytesWAlpha[chan4idx + 0] = static_cast<uint8_t>(255.9999f * pixel.x);
-					imgBytesWAlpha[chan4idx + 1] = static_cast<uint8_t>(255.9999f * pixel.y);
-					imgBytesWAlpha[chan4idx + 2] = static_cast<uint8_t>(255.9999f * pixel.z);
-					imgBytesWAlpha[chan4idx + 3] = (!fillAlpha) ? (uint8_t)255.9999f * pixel.w : static_cast<uint8_t>(255.9999f * fillValue);
+					imgBytesWAlpha[chan4idx + 0] = static_cast<uint8_t>(255.9999f * pixel[0]);
+					imgBytesWAlpha[chan4idx + 1] = static_cast<uint8_t>(255.9999f * pixel[1]);
+					imgBytesWAlpha[chan4idx + 2] = static_cast<uint8_t>(255.9999f * pixel[2]);
+					imgBytesWAlpha[chan4idx + 3] = (!fillAlpha) ? (uint8_t)255.9999f * pixel[3] : static_cast<uint8_t>(255.9999f * fillValue);
 				}
 			}
 		}

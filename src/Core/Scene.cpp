@@ -12,11 +12,7 @@ rte::Scene::Scene(const ImageSpec& img_spec)
     output_image = Image(img_spec);
 }
 
-rte::Scene::~Scene()
-{
-    delete[] output_image.pixels;
-    output_image.pixels = nullptr;
-}
+rte::Scene::~Scene() {}
 
 void rte::Scene::attach(const std::shared_ptr<IRayHittable>& object)
 {
@@ -25,7 +21,7 @@ void rte::Scene::attach(const std::shared_ptr<IRayHittable>& object)
 
 void rte::Scene::init()
 {
-    camera.viewport = rte::Camera::Viewport(2.0f, output_image);
+    camera.viewport = Camera::Viewport(2.0f, output_image);
     camera.viewport.coord_upper_left_pixel(&camera);
 }
 
@@ -36,25 +32,26 @@ void rte::Scene::render()
     const auto WIDTH = spec.width;
     const auto HEIGHT = spec.height;
     
-    for (int i = 0; i < WIDTH; ++i)
+    for (size_t i = 0; i < WIDTH-1; i++)
     {
         std::clog << "\rScanlines remaining: " << (WIDTH - i);
-        for (int j = 0; j < HEIGHT; ++j)
+        for (size_t j = 0; j < HEIGHT-1; j++)
         {
-            const size_t idx = ((i * WIDTH) + j);
+            size_t idx = ((j * WIDTH) + i);
 
-            rte::vec3 pixel_center = camera.viewport.pixel00_loc +
+            vec3 pixel_center = camera.viewport.pixel00_loc +
                 (i * camera.viewport.pixel_delta_u) +
                 (j * camera.viewport.pixel_delta_v);
-            rte::vec3 ray_direction = pixel_center - camera.centre;
-            rte::Ray3D r(camera.centre, ray_direction);
+            vec3 ray_direction = pixel_center - camera.centre;
+            Ray3D r(camera.centre, ray_direction);
 
-            rte::Colour colour = rte::Scene::ray_colour(r, world);
+            Colour colour = ray_colour(r, world);
             output_image.pixels[idx][0] = colour[0];
             output_image.pixels[idx][1] = colour[1];
             output_image.pixels[idx][2] = colour[2];
         }
     }
+
     std::clog << "\r\r\r" << std::endl;
     output_image.writeToDisk("./test", true);
     std::clog << "\rDone\t\t\t\t";

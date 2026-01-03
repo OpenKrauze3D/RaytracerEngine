@@ -9,19 +9,15 @@
 namespace rte
 {
     struct vec4 {
+        
+        double e[4]{0,0,0,0};
 
-        union
-        {
-            double e[4]{0,0,0,0};
-            struct { double x, y ,z, w; };
-            // struct { double r, g ,b, a; };
-        };
 
         constexpr vec4() {}
         constexpr vec4(const vec3& v1, const double e3) : e{v1.x, v1.y, v1.z, e3} {}
         constexpr vec4(const double e3, const vec3& v1) : e{e3, v1.x, v1.y, v1.z} {}
         constexpr vec4(double e0, double e1, double e2, double e3) : e{e0, e1, e2, e3} {}
-        constexpr vec4(const vec4& v1) : e{v1.x, v1.y, v1.z, v1.w} {}
+        constexpr vec4(const vec4& v1) : e{v1[0], v1[1], v1[2], v1[3]} {}
 
         constexpr vec4 operator-() const { return vec4(-e[0], -e[1], -e[2], e[3]); }
         constexpr double operator[](int i) const { return e[i]; }

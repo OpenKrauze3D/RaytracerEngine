@@ -1,8 +1,8 @@
 #ifndef IMG_HPP
 #define IMG_HPP
 
+#include <vector>
 #include <utility>
-// #include <glm/glm.hpp>
 #include "Core/vec4.hpp"
 
 
@@ -81,7 +81,7 @@ namespace rte
 	public:
 		Image();
 		Image(const ImageSpec& spec);
-		Image(ImageSpec&& spec);
+		Image(const Image& img);
 		~Image();
 
 	public:
@@ -89,7 +89,7 @@ namespace rte
 		void generate_noise(int seed = 0);
 		const ImageSpec& GetSpec() const;
 	public:
-		vec4* pixels = nullptr;
+		std::vector<vec4> pixels;
 
 	private:
 		ImageSpec m_specification;

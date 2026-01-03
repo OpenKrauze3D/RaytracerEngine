@@ -14,7 +14,7 @@ namespace rte
     {
     public:
         Scene();
-        Scene(const ImageSpec& img_spec);
+        explicit Scene(const ImageSpec& img_spec);
         ~Scene();
     public:
         void attach(const std::shared_ptr<IRayHittable>& object);
