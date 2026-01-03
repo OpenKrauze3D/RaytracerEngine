@@ -18,11 +18,21 @@ namespace rte
         ~Scene();
     public:
         void attach(const std::shared_ptr<IRayHittable>& object);
+        void save(std::string_view fp, bool fill_alpha = true, double alpha = 1.0);
     public:
         void init();
         void render();
+        void multi_core_render();
+        static void render_job(size_t startY, size_t endY, const ImageSpec& spec,
+            int samples_per_pixel,
+            float pixel_sample_scale,
+            int max_bounces,
+            const Camera& camera,
+            const IRayHittable& world,
+            Image& output_image
+        );
     public:
-        Colour ray_colour(const Ray3D& ray, int depth, const IRayHittable& hittable);
+        static Colour ray_colour(const Ray3D& ray, int depth, const IRayHittable& hittable);
     public:
         int samples_per_pixel = 10;
         int max_bounces = 10;
