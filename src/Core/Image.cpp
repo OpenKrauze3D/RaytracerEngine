@@ -13,18 +13,23 @@
 #include <filesystem>
 namespace rte
 {
+	Image::Image()
+	{
+		pixels = nullptr;
+	}
+	
 	Image::Image(const ImageSpec& spec)
 	{
 		m_specification = spec;
-		m_data = new rte::vec4[m_specification.Dimensions()];
+		pixels = new rte::vec4[m_specification.Dimensions()];
 	}
 
 	Image::~Image()
 	{
-		if (m_data != nullptr)
-			delete[] m_data;
+		if (pixels != nullptr)
+			delete[] pixels;
 	
-		m_data = nullptr;
+		pixels = nullptr;
 	}
 
 	void Image::writeToDisk(const std::string_view fp, bool fillAlpha, double fillValue)
@@ -52,7 +57,7 @@ namespace rte
 				const size_t chan3idx = index * 3;
 				const size_t chan4idx = index * 4;
 
-				const rte::vec4& pixel = m_data[index];
+				const rte::vec4& pixel = pixels[index];
 
 				if (imgFloats != nullptr)
 				{
@@ -134,9 +139,9 @@ namespace rte
 			for (size_t i = 0; i < height; ++i) {
 				const size_t idx = ((j * width) + i);
     
-				m_data[idx][0] = red(generator);     // Red channel
-				m_data[idx][1] = green(generator);   // Green channel
-				m_data[idx][2] = blue(generator);    // Blue channel
+				pixels[idx][0] = red(generator);     // Red channel
+				pixels[idx][1] = green(generator);   // Green channel
+				pixels[idx][2] = blue(generator);    // Blue channel
 			}
 		}
 	}

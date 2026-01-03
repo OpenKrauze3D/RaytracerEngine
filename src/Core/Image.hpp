@@ -79,16 +79,17 @@ namespace rte
 	class Image
 	{
 	public:
-		Image() = delete;
+		Image();
 		Image(const ImageSpec& spec);
+		Image(ImageSpec&& spec);
 		~Image();
 
 	public:
-		void writeToDisk(const std::string_view fp, bool fillAlpha = true, double fillValue = 1.0);
+		void writeToDisk(std::string_view fp, bool fillAlpha = true, double fillValue = 1.0);
 		void generate_noise(int seed = 0);
 		const ImageSpec& GetSpec() const;
 	public:
-		rte::vec4* m_data = nullptr;
+		vec4* pixels = nullptr;
 
 	private:
 		ImageSpec m_specification;
