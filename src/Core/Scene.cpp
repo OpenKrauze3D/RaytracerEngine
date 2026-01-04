@@ -30,9 +30,13 @@ void rte::Scene::save(std::string_view fp, bool fill_alpha, double alpha)
 
 void rte::Scene::init()
 {
-    camera.centre = {0,0.2,0.3};
-    camera.viewport = Camera::Viewport(1.5f, output_image);
-    camera.viewport.coord_upper_left_pixel(&camera);
+    camera.img_spec = output_image.GetSpec();
+    camera.centre = {13,2,3};
+    camera.viewport = Camera::Viewport();
+    camera.vfov = 90;
+    camera.defocus_angle = 0.6;
+    camera.focus_dist    = 10.0;
+    camera.init();
     pixel_samples_scale = 1.0 / static_cast<double>(samples_per_pixel);
 }
 

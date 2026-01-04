@@ -118,6 +118,18 @@ namespace rte
         return v / v.length();
     }
 
+    inline vec3 random_in_unit_disk()
+    {
+        while (true)
+        {
+            vec3 position = vec3(random_double(-1,1), random_double(-1,1), 0);
+            if (position.length_squared() < 1.0)
+            {
+                return position;
+            }
+        }
+    }
+
     inline vec3 random_unit_vector()
     {
         while (true)

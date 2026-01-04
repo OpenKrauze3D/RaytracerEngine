@@ -5,10 +5,10 @@
 
 namespace rte
 {
-    class MAT_Dielectric : public IMaterialExpression
+    class MAT_Transmissive : public IMaterialExpression
     {
     public:
-        MAT_Dielectric(double IOR) : ior(IOR) {}
+        MAT_Transmissive(double IOR) : ior(IOR) {}
 
         bool scatter(const Ray3D& ray_in, const HitResult& hit_result, Colour& attenuation, Ray3D& scattered_ray) const override
         {
