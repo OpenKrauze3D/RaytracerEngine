@@ -31,11 +31,12 @@ void rte::Scene::save(std::string_view fp, bool fill_alpha, double alpha)
 void rte::Scene::init()
 {
     camera.img_spec = output_image.GetSpec();
-    camera.centre = {13,2,3};
+    camera.centre = {0.05,2,3};
+    camera.lookat = {0,0,-2};
     camera.viewport = Camera::Viewport();
-    camera.vfov = 90;
-    camera.defocus_angle = 0.6;
-    camera.focus_dist    = 10.0;
+    camera.vfov = 70;
+    camera.defocus_angle = 0.04;
+    camera.focus_dist    = 5.0;
     camera.init();
     pixel_samples_scale = 1.0 / static_cast<double>(samples_per_pixel);
 }
@@ -139,7 +140,7 @@ rte::Colour rte::Scene::ray_colour(const Ray3D& ray, int bounces, const IRayHitt
     
     if (hittable.hit(ray, interval(0.0001, DINFINITY), result)) {
         Ray3D scattered;
-        Colour attenuation;
+        Colour attenuation = {1,1,1};
         
         if (result.material->scatter(ray, result, attenuation, scattered))
         {
